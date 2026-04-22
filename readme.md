@@ -18,6 +18,17 @@ Start with:
 cd server && uvicorn main:app --reload
 ```
 
+If you see `ModuleNotFoundError: No module named 'agents'`, make sure the server has:
+```bash
+server/agents/__init__.py
+server/agents/orchestrator.py
+```
+
+The backend should expose these routes:
+- `GET /api/telemetry`
+- `GET /api/decisions`
+- `POST /data`
+
 ## Architecture
 
 - `app/page.tsx` → main dashboard
