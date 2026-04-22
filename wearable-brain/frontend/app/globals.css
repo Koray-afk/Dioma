@@ -70,12 +70,6 @@
   --color-muted-fg: #6b7280;
 }
 
-@theme inline {
-  --color-background: var(--color-bg);
-  --color-foreground: var(--color-text);
-  --font-sans: "Geist", system-ui, sans-serif;
-}
-
 html {
   scroll-behavior: smooth;
   font-size: 16px;
@@ -548,7 +542,6 @@ body {
   .decision-feed {
     max-height: none;
   }
-}
 }
 
 .inject-card {
