@@ -1,17 +1,20 @@
-export type TelemetryPoint = {
-  timestamp?: string;
+export interface TelemetryPoint {
+  timestamp: string;
   heart_rate?: number;
-  steps?: number;
   battery?: number;
-  stress?: number;
-  [key: string]: unknown;
-};
+  steps?: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+}
 
-export type DecisionItem = {
+export interface Decision {
   id?: string;
-  action?: string;
+  timestamp?: string;
+  action: string;
   reason?: string;
-  confidence?: number;
-  created_at?: string;
-  [key: string]: unknown;
-};
+  overridden?: boolean;
+  source?: string;
+}
+
+// Backward-compatible alias for existing components.
+export type DecisionItem = Decision;

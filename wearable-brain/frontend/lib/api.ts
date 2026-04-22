@@ -1,32 +1,47 @@
-import { API_BASE_URL } from "@/lib/constants";
-import type { DecisionItem, TelemetryPoint } from "@/lib/types";
+import { API_BASE } from "@/lib/constants";
+import type { Decision, TelemetryPoint } from "@/lib/types";
 
-async function readJson<T>(path: string): Promise<T> {
-  const res = await fetch(`${API_BASE_URL}${path}`, { cache: "no-store" });
-  if (!res.ok) {
-    throw new Error(`Request failed: ${res.status}`);
+export async function getTelemetry(): Promise<TelemetryPoint[]> {
+  try {
+    const res = await fetch(`${API_BASE}/api/telemetry`, { cache: "no-store" });
+    if (!res.ok) {
+      return [];
+    }
+    return (await res.json()) as TelemetryPoint[];
+  } catch {
+    return [];
   }
-  return (await res.json()) as T;
 }
 
-export function fetchTelemetry() {
-  return readJson<TelemetryPoint[]>("/api/telemetry");
-}
-
-export function fetchDecisions() {
-  return readJson<DecisionItem[]>("/api/decisions");
-}
-
-export async function injectTelemetry(payload: TelemetryPoint) {
-  const res = await fetch(`${API_BASE_URL}/data`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-
-  if (!res.ok) {
-    throw new Error(`Inject failed: ${res.status}`);
+export async function getDecisions(): Promise<Decision[]> {
+  try {
+    const res = await fetch(`${API_BASE}/api/decisions`, { cache: "no-store" });
+    if (!res.ok) {
+      return [];
+    }
+    return (await res.json()) as Decision[];
+  } catch {
+    return [];
   }
-
-  return (await res.json()) as { ok: boolean };
 }
+
+export async function postData(payload: object): Promise<void> {
+  try {
+    const res = await fetch(`${API_BASE}/data`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      return;
+    }
+  } catch {
+    return;
+  }
+}
+
+// Backward-compatible wrappers used by current hooks/components.
+export const fetchTelemetry = getTelemetry;
+export const fetchDecisions = getDecisions;
+export const injectTelemetry = postData;
