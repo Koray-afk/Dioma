@@ -1,40 +1,37 @@
-# Dioma
+# Arbiter Dashboard
 
-## Python Setup (macOS)
+Real-time telemetry and AI decision monitoring dashboard for the Wearable Brain project.
 
-This project uses a local virtual environment so package installs do not fail with Homebrew's `externally-managed-environment` error.
-
-### 1) Create virtual environment
+## Setup
 
 ```bash
-python3 -m venv .venv
+npm install
+npm run dev   # starts on http://localhost:3000
 ```
 
-### 2) Activate virtual environment
+## Backend
 
+Requires FastAPI server running on `http://localhost:8000`
+
+Start with:
 ```bash
-source .venv/bin/activate
+cd server && uvicorn main:app --reload
 ```
 
-### 3) Upgrade pip
+## Architecture
 
-```bash
-python -m pip install --upgrade pip
-```
+- `app/page.tsx` → main dashboard
+- `lib/api.ts` → all backend calls
+- `hooks/use*.ts` → polling hooks (5s interval)
+- `components/telemetry/` → HR, battery, steps UI
+- `components/decisions/` → decision log feed
+- `components/inject/` → scenario injection buttons
+- `lib/constants.ts` → scenario payloads (edit here to change test data)
 
-### 4) Install dependencies
+## Decision color coding
 
-```bash
-python -m pip install langgraph langgraph-supervisor langchain-openai fastapi uvicorn python-dotenv
-```
+- **EMERGENCY** → red
+- **Overridden** → amber
+- **SILENT** → gray
+- **Default** → teal
 
-### 5) Install any new package later
-
-```bash
-python -m pip install <package-name>
-```
-
-## Notes
-
-- Always activate `.venv` before running install commands.
-- Use `python -m pip ...` instead of `pip` to ensure packages go into the active environment.
