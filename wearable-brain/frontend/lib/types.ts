@@ -12,6 +12,7 @@ export interface Decision {
   timestamp?: string;
   action: string;
   reason?: string;
+  confidence?: number;
   overridden?: boolean;
   source?: string;
 }
