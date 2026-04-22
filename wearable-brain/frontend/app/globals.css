@@ -398,6 +398,104 @@ body {
   grid-column: span 1;
 }
 
+/* Dashboard Layout */
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: var(--space-5);
+}
+
+.dashboard-left,
+.dashboard-right {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.dashboard-right {
+  min-height: 0;
+}
+
+/* KPI Stats */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+}
+
+.kpi-card {
+  background: var(--color-surface);
+  border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.kpi-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+
+.kpi-label {
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-weight: 500;
+}
+
+.kpi-content {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1);
+}
+
+.kpi-value {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.kpi-unit {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+/* Skeleton Loader */
+.skeleton {
+  background: color-mix(in srgb, var(--color-surface-2) 84%, transparent);
+  border-radius: 8px;
+  animation: shimmer 1.2s infinite;
+}
+
+.skeleton-text {
+  background: color-mix(in srgb, var(--color-border) 64%, transparent);
+  border-radius: 4px;
+}
+
+/* Sticky Positioning */
+.sticky-top {
+  position: sticky;
+  top: var(--space-5);
+}
+
+/* Decision Feed Container */
+.decision-feed {
+  min-height: 400px;
+  max-height: 600px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.decision-feed > div {
+  flex: 1;
+}
+
 @media (max-width: 1024px) {
   .app-sidebar {
     width: var(--sidebar-collapsed);
@@ -428,11 +526,29 @@ body {
     grid-template-columns: 1fr;
   }
 
+  .dashboard-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .chart-panel,
   .decision-panel,
   .inject-panel {
     grid-column: span 1;
   }
+
+  .sticky-top {
+    position: relative;
+    top: auto;
+  }
+
+  .decision-feed {
+    max-height: none;
+  }
+}
 }
 
 .inject-card {
