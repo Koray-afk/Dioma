@@ -2,47 +2,124 @@
 
 import { useState } from "react";
 import clsx from "clsx";
-import { injectTelemetry } from "@/lib/api";
+import { CheckIcon, Loader2Icon, XIcon } from "lucide-react";
+import { postData } from "@/lib/api";
+import { SCENARIO_PAYLOADS } from "@/lib/constants";
+
+type ScenarioKey = "emergency" | "lowBatteryNav" | "meditation";
+type ScenarioStatus = "idle" | "loading" | "success" | "error";
+
+const SCENARIOS: Array<{
+  key: ScenarioKey;
+  label: string;
+  emoji: string;
+  style: "danger" | "warning" | "primary";
+}> = [
+  {
+    key: "emergency",
+    label: "Inject Emergency",
+    emoji: "🚨",
+    style: "danger",
+  },
+  {
+    key: "lowBatteryNav",
+    label: "Inject Low Battery + Nav",
+    emoji: "🔋",
+    style: "warning",
+  },
+  {
+    key: "meditation",
+    label: "Inject Meditation",
+    emoji: "🧘",
+    style: "primary",
+  },
+];
 
 export function InjectButtons() {
-  const [status, setStatus] = useState<string>("idle");
+  const [statusByScenario, setStatusByScenario] = useState<Record<ScenarioKey, ScenarioStatus>>({
+    emergency: "idle",
+    lowBatteryNav: "idle",
+    meditation: "idle",
+  });
 
-  const injectSample = async (mode: "normal" | "stress") => {
-    setStatus("sending");
+  const isAnyLoading = Object.values(statusByScenario).includes("loading");
 
-    const payload =
-      mode === "normal"
-        ? { heart_rate: 76, stress: 22, steps: 4210, battery: 78 }
-        : { heart_rate: 128, stress: 85, steps: 4222, battery: 74 };
+  const runScenario = async (key: ScenarioKey) => {
+    const payload = SCENARIO_PAYLOADS[key];
+
+    setStatusByScenario((prev) => ({
+      ...prev,
+      [key]: "loading",
+    }));
 
     try {
-      await injectTelemetry(payload);
-      setStatus(`sent: ${mode}`);
-    } catch {
-      setStatus("error");
+      await postData(payload);
+      setStatusByScenario((prev) => ({
+        ...prev,
+        [key]: "success",
+      }));
+    } catch (error) {
+      console.error("Failed to post scenario payload", error);
+      setStatusByScenario((prev) => ({
+        ...prev,
+        [key]: "error",
+      }));
+    } finally {
+      window.setTimeout(() => {
+        setStatusByScenario((prev) => ({
+          ...prev,
+          [key]: "idle",
+        }));
+      }, 500);
     }
   };
 
   return (
-    <div>
-      <h2 style={{ marginTop: 0 }}>Inject Test Data</h2>
-      <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-        <button
-          className={clsx("inject-btn")}
-          onClick={() => void injectSample("normal")}
-          type="button"
-        >
-          Inject Normal
-        </button>
-        <button
-          className={clsx("inject-btn", "inject-btn-danger")}
-          onClick={() => void injectSample("stress")}
-          type="button"
-        >
-          Inject Stress
-        </button>
+    <section className="inject-card">
+      <header className="inject-card-header">
+        <h2 className="inject-title">Inject Scenario</h2>
+        <p className="inject-subtitle">Simulate sensor payloads to test Arbiter decisions</p>
+      </header>
+
+      <div className="inject-button-row">
+        {SCENARIOS.map((scenario) => {
+          const status = statusByScenario[scenario.key];
+          const payload = SCENARIO_PAYLOADS[scenario.key];
+
+          return (
+            <button
+              key={scenario.key}
+              type="button"
+              className={clsx(
+                "inject-pill",
+                `inject-pill-${scenario.style}`,
+                status === "success" && "inject-pill-success",
+                status === "error" && "inject-pill-error"
+              )}
+              onClick={() => void runScenario(scenario.key)}
+              disabled={isAnyLoading}
+              aria-label={scenario.label}
+            >
+              <span className="inject-pill-content">
+                {status === "loading" ? (
+                  <Loader2Icon size={16} className="inject-spin" />
+                ) : status === "success" ? (
+                  <CheckIcon size={16} />
+                ) : status === "error" ? (
+                  <XIcon size={16} />
+                ) : (
+                  <span>{scenario.emoji}</span>
+                )}
+                <span>{scenario.label}</span>
+              </span>
+
+              <span className="inject-tooltip" role="tooltip">
+                <pre>{JSON.stringify(payload, null, 2)}</pre>
+              </span>
+            </button>
+          );
+        })}
       </div>
-      <p style={{ marginBottom: 0, color: "#475569" }}>Status: {status}</p>
-    </div>
+    </section>
   );
 }

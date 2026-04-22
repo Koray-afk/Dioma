@@ -26,18 +26,14 @@ export async function getDecisions(): Promise<Decision[]> {
 }
 
 export async function postData(payload: object): Promise<void> {
-  try {
-    const res = await fetch(`${API_BASE}/data`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+  const res = await fetch(`${API_BASE}/data`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
 
-    if (!res.ok) {
-      return;
-    }
-  } catch {
-    return;
+  if (!res.ok) {
+    throw new Error(`POST /data failed with status ${res.status}`);
   }
 }
 

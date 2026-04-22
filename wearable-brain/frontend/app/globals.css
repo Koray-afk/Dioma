@@ -435,25 +435,115 @@ body {
   }
 }
 
-.inject-btn {
-  border: none;
-  border-radius: 10px;
-  padding: 0.55rem 0.85rem;
-  background: var(--color-primary);
+.inject-card {
+  background: var(--color-surface);
+  border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+}
+
+.inject-card-header {
+  margin-bottom: var(--space-3);
+}
+
+.inject-title {
+  margin: 0;
+  font-size: var(--text-lg);
+}
+
+.inject-subtitle {
+  margin: var(--space-1) 0 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.inject-button-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.inject-pill {
+  position: relative;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 0.58rem 0.95rem;
   color: #f8fafc;
   cursor: pointer;
+  transition: transform 120ms ease, filter 140ms ease;
 }
 
-.inject-btn:hover {
+.inject-pill:disabled {
+  opacity: 0.72;
+  cursor: not-allowed;
+}
+
+.inject-pill:not(:disabled):hover {
   filter: brightness(1.08);
+  transform: translateY(-1px);
 }
 
-.inject-btn-danger {
+.inject-pill-content {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+}
+
+.inject-pill-primary {
+  background: var(--color-primary);
+}
+
+.inject-pill-warning {
+  background: var(--color-warning);
+  color: #111111;
+}
+
+.inject-pill-danger {
   background: var(--color-error);
 }
 
-.inject-btn-danger:hover {
-  filter: brightness(1.08);
+.inject-pill-success {
+  box-shadow: 0 0 0 2px color-mix(in srgb, #22c55e 48%, transparent);
+}
+
+.inject-pill-error {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-error) 48%, transparent);
+}
+
+.inject-spin {
+  animation: spin 0.8s linear infinite;
+}
+
+.inject-tooltip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  transform: translateX(-50%);
+  background: #0b0b0b;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: var(--space-2);
+  color: #e5e7eb;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 140ms ease;
+  min-width: 220px;
+  z-index: 15;
+}
+
+.inject-tooltip pre {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  line-height: 1.35;
+  white-space: pre-wrap;
+}
+
+.inject-pill:hover .inject-tooltip {
+  opacity: 1;
 }
 
 @keyframes blink {
@@ -492,5 +582,11 @@ body {
   100% {
     transform: translateY(0);
     opacity: 1;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }
