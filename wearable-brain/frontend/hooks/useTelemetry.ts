@@ -1,33 +1,44 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchTelemetry } from "@/lib/api";
-import { POLL_INTERVAL_MS } from "@/lib/constants";
+import { getTelemetry } from "@/lib/api";
+import { POLL_INTERVAL } from "@/lib/constants";
 import type { TelemetryPoint } from "@/lib/types";
 
 export function useTelemetry() {
   const [data, setData] = useState<TelemetryPoint[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
 
     const load = async () => {
+      if (mounted) {
+        setLoading(true);
+      }
+
       try {
-        const rows = await fetchTelemetry();
+        const rows = await getTelemetry();
         if (mounted) {
           setData(rows);
           setError(null);
+          setLastUpdated(new Date().toISOString());
         }
       } catch (err) {
         if (mounted) {
           setError(err instanceof Error ? err.message : "Unknown error");
         }
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
       }
     };
 
     void load();
-    const timer = setInterval(() => void load(), POLL_INTERVAL_MS);
+    const timer = setInterval(() => void load(), POLL_INTERVAL);
 
     return () => {
       mounted = false;
@@ -35,5 +46,5 @@ export function useTelemetry() {
     };
   }, []);
 
-  return { data, error };
+  return { data, loading, error, lastUpdated };
 }
