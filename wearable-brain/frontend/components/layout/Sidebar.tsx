@@ -1,42 +1,69 @@
-import { Brain, Activity, Gauge, ListChecks } from "lucide-react";
+"use client";
 
-const items = [
-  { label: "Overview", icon: Activity },
-  { label: "Telemetry", icon: Gauge },
-  { label: "Decisions", icon: ListChecks },
+import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { ActivityIcon, BrainIcon, HomeIcon, MoonIcon, SunIcon } from "lucide-react";
+
+const navItems = [
+  { label: "Dashboard", href: "/", icon: HomeIcon },
+  { label: "Telemetry", href: "/telemetry", icon: ActivityIcon },
+  { label: "Decisions", href: "/decisions", icon: BrainIcon },
 ];
 
 export function Sidebar() {
+  const pathname = usePathname();
+  const [theme, setTheme] = useState<"dark" | "light">(() => {
+    if (typeof document === "undefined") {
+      return "dark";
+    }
+    const current = document.documentElement.getAttribute("data-theme");
+    return current === "light" ? "light" : "dark";
+  });
+
+  const toggleTheme = () => {
+    const current = document.documentElement.getAttribute("data-theme") || "dark";
+    const next = current === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    localStorage.setItem("theme", next);
+    setTheme(next === "light" ? "light" : "dark");
+  };
+
   return (
-    <aside
-      style={{
-        background: "linear-gradient(180deg, #0f172a 0%, #1e293b 100%)",
-        color: "#e2e8f0",
-        padding: "1.25rem",
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-        <Brain size={22} />
-        <strong>Wearable Brain</strong>
+    <aside className="app-sidebar">
+      <div className="sidebar-logo">
+        <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+          <circle cx="7" cy="7" r="5" fill="var(--color-primary)" className="pulse-dot" />
+        </svg>
+        <strong className="sidebar-label">Arbiter</strong>
       </div>
-      <nav style={{ marginTop: "2rem", display: "grid", gap: "0.5rem" }}>
-        {items.map((item) => (
-          <div
-            key={item.label}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              padding: "0.6rem 0.75rem",
-              borderRadius: "10px",
-              background: "rgba(148, 163, 184, 0.12)",
-            }}
-          >
-            <item.icon size={16} />
-            <span>{item.label}</span>
-          </div>
-        ))}
+
+      <nav className="sidebar-nav" aria-label="Primary">
+        {navItems.map(({ label, href, icon: Icon }) => {
+          const isActive = pathname === href;
+          return (
+            <Link
+              key={label}
+              href={href}
+              className={`sidebar-link${isActive ? " active" : ""}`}
+              aria-label={label}
+            >
+              <Icon size={18} />
+              <span className="sidebar-label">{label}</span>
+            </Link>
+          );
+        })}
       </nav>
+
+      <button
+        type="button"
+        className="theme-toggle"
+        onClick={toggleTheme}
+        aria-label="Toggle theme"
+      >
+        {theme === "dark" ? <SunIcon size={18} /> : <MoonIcon size={18} />}
+        <span className="sidebar-label">Theme</span>
+      </button>
     </aside>
   );
 }
