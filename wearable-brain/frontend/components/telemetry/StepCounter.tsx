@@ -1,18 +1,53 @@
 "use client";
 
-import { useTelemetry } from "@/hooks/useTelemetry";
+import { FootprintsIcon } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
-export function StepCounter() {
-  const { data } = useTelemetry();
-  const latest = data[data.length - 1];
+type Props = {
+  value?: number;
+};
+
+export function StepCounter({ value }: Props) {
+  const target = Math.max(0, Number(value ?? 0));
+  const [displayValue, setDisplayValue] = useState<number>(target);
+  const prev = useRef<number>(target);
+
+  useEffect(() => {
+    const start = prev.current;
+    const end = target;
+    const durationMs = 450;
+    const startTime = performance.now();
+    let frame = 0;
+
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - startTime) / durationMs);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const current = Math.round(start + (end - start) * eased);
+      setDisplayValue(current);
+
+      if (t < 1) {
+        frame = requestAnimationFrame(tick);
+      }
+    };
+
+    frame = requestAnimationFrame(tick);
+    prev.current = end;
+
+    return () => cancelAnimationFrame(frame);
+  }, [target]);
 
   return (
-    <div>
-      <h2 style={{ marginTop: 0 }}>Step Counter</h2>
-      <p style={{ fontSize: "1.8rem", margin: "0.3rem 0" }}>
-        {Number(latest?.steps ?? 0).toLocaleString()}
-      </p>
-      <p style={{ color: "#64748b", margin: 0 }}>Latest observed value</p>
+    <div className="telemetry-card">
+      <header className="telemetry-card-header">
+        <div className="telemetry-card-title">
+          <FootprintsIcon size={16} />
+          <span>Step Counter</span>
+        </div>
+        <span className="value-badge value-badge-numeric">{target.toLocaleString()}</span>
+      </header>
+
+      <p className="step-value value-badge-numeric step-animate">{displayValue.toLocaleString()}</p>
+      <p className="step-subtitle">steps today</p>
     </div>
   );
 }

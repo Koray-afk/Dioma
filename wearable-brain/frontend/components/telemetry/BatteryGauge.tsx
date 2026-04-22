@@ -1,33 +1,31 @@
 "use client";
 
-import { useTelemetry } from "@/hooks/useTelemetry";
+import { BatteryChargingIcon } from "lucide-react";
 
-export function BatteryGauge() {
-  const { data } = useTelemetry();
-  const latest = data[data.length - 1];
-  const battery = Math.max(0, Math.min(100, Number(latest?.battery ?? 0)));
+type Props = {
+  value?: number;
+};
+
+export function BatteryGauge({ value }: Props) {
+  const battery = Math.max(0, Math.min(100, Number(value ?? 0)));
+
+  const fillColor = battery > 50 ? "#22c55e" : battery >= 20 ? "#f59e0b" : "#ef4444";
 
   return (
-    <div>
-      <h2 style={{ marginTop: 0 }}>Battery</h2>
-      <p style={{ fontSize: "1.8rem", margin: "0.3rem 0" }}>{battery}%</p>
-      <div
-        style={{
-          height: 10,
-          borderRadius: 999,
-          overflow: "hidden",
-          background: "#e2e8f0",
-        }}
-      >
-        <div
-          style={{
-            width: `${battery}%`,
-            height: "100%",
-            background: battery > 25 ? "#16a34a" : "#dc2626",
-            transition: "width 0.2s ease",
-          }}
-        />
+    <div className="telemetry-card">
+      <header className="telemetry-card-header">
+        <div className="telemetry-card-title">
+          <BatteryChargingIcon size={16} />
+          <span>Battery</span>
+        </div>
+        <span className="value-badge value-badge-numeric">{battery}%</span>
+      </header>
+
+      <div className="battery-track" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={battery}>
+        <div className="battery-fill" style={{ width: `${battery}%`, background: fillColor }} />
       </div>
+
+      <p className="battery-text value-badge-numeric">{battery}% remaining</p>
     </div>
   );
 }
