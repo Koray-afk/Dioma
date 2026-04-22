@@ -1,20 +1,80 @@
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap");
 @import "tailwindcss";
 
 :root {
-  --background: #f3f5f7;
-  --foreground: #0f172a;
-  --panel: #ffffff;
-  --muted: #64748b;
-  --line: #dbe4f0;
-  --accent: #0f766e;
-  --accent-strong: #0b5f58;
+  --color-bg: #0d0d0d;
+  --color-surface: #111111;
+  --color-surface-2: #1a1a1a;
+  --color-border: #2a2a2a;
+  --color-text: #f5f5f5;
+  --color-text-muted: #a1a1aa;
+  --color-text-faint: #71717a;
+  --color-primary: #4f98a3;
+  --color-error: #ef4444;
+  --color-warning: #f59e0b;
+  --color-muted-fg: #6b7280;
+
+  --text-xs: clamp(0.72rem, 0.69rem + 0.12vw, 0.78rem);
+  --text-sm: clamp(0.84rem, 0.8rem + 0.15vw, 0.94rem);
+  --text-base: clamp(0.96rem, 0.92rem + 0.18vw, 1.06rem);
+  --text-lg: clamp(1.08rem, 1.01rem + 0.32vw, 1.24rem);
+  --text-xl: clamp(1.24rem, 1.15rem + 0.5vw, 1.52rem);
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-7: 1.75rem;
+  --space-8: 2rem;
+  --space-9: 2.25rem;
+  --space-10: 2.5rem;
+  --space-11: 2.75rem;
+  --space-12: 3rem;
+  --space-13: 3.25rem;
+  --space-14: 3.5rem;
+  --space-15: 3.75rem;
+  --space-16: 4rem;
+}
+
+[data-theme="dark"] {
+  --color-bg: #0d0d0d;
+  --color-surface: #111111;
+  --color-surface-2: #1a1a1a;
+  --color-border: #2a2a2a;
+  --color-text: #f5f5f5;
+  --color-text-muted: #a1a1aa;
+  --color-text-faint: #71717a;
+  --color-primary: #4f98a3;
+  --color-error: #ef4444;
+  --color-warning: #f59e0b;
+  --color-muted-fg: #6b7280;
+}
+
+[data-theme="light"] {
+  --color-bg: #f7f6f2;
+  --color-surface: #fffcf7;
+  --color-surface-2: #f4efe7;
+  --color-border: #e6dfd5;
+  --color-text: #111111;
+  --color-text-muted: #4b5563;
+  --color-text-faint: #6b7280;
+  --color-primary: #01696f;
+  --color-error: #ef4444;
+  --color-warning: #f59e0b;
+  --color-muted-fg: #6b7280;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--color-bg);
+  --color-foreground: var(--color-text);
+  --font-sans: "Geist", system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
 }
 
 * {
@@ -23,9 +83,14 @@
 
 body {
   margin: 0;
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  min-height: 100vh;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: "Geist", system-ui, sans-serif;
+  font-size: var(--text-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-variant-numeric: tabular-nums;
 }
 
 .dashboard-shell {
@@ -35,22 +100,22 @@ body {
 }
 
 .dashboard-main {
-  padding: 1.25rem;
+  padding: var(--space-5);
 }
 
 .dashboard-grid {
-  margin-top: 1rem;
+  margin-top: var(--space-4);
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
+  gap: var(--space-4);
 }
 
 .panel {
-  background: var(--panel);
-  border: 1px solid var(--line);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 16px;
-  padding: 1rem;
-  box-shadow: 0 6px 24px rgba(15, 23, 42, 0.06);
+  padding: var(--space-4);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
 }
 
 .chart-panel {
@@ -85,19 +150,19 @@ body {
   border: none;
   border-radius: 10px;
   padding: 0.55rem 0.85rem;
-  background: var(--accent);
+  background: var(--color-primary);
   color: #f8fafc;
   cursor: pointer;
 }
 
 .inject-btn:hover {
-  background: var(--accent-strong);
+  filter: brightness(1.08);
 }
 
 .inject-btn-danger {
-  background: #b45309;
+  background: var(--color-error);
 }
 
 .inject-btn-danger:hover {
-  background: #92400e;
+  filter: brightness(1.08);
 }
