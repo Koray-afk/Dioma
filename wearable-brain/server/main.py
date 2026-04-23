@@ -1,8 +1,17 @@
 """Combined API."""
 # server/main.py — single FastAPI app combining both tracks
+import sys
+from pathlib import Path
+
 from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+
+# Ensure local package imports (e.g., agents/) resolve regardless of cwd.
+SERVER_DIR = Path(__file__).resolve().parent
+if str(SERVER_DIR) not in sys.path:
+    sys.path.append(str(SERVER_DIR))
+
 from agents.orchestrator import agent_loop, get_latest_decisions, telemetry_window
 import asyncio
 
